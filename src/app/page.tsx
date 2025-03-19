@@ -22,6 +22,9 @@ export default function Home() {
           <li style={{ marginBottom: '0.5rem' }}>
             <Link href="/client-component-example">Go to Client Component Example</Link>
           </li>
+          <li style={{ marginBottom: '0.5rem' }}>
+            <Link href="/users">Go to Users Page</Link>
+          </li>
         </ul>
       </nav>
     </main>
