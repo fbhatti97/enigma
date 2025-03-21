@@ -1,12 +1,14 @@
-// src/app/ssr-test/page.tsx
-import { serverRunner } from '@/amplify-server';
+import { prisma } from '@/lib/db';
 
 export const dynamic = 'force-dynamic'; // Disable static optimization for this page
 
 export default async function SSRTestPage() {
   try {
-    // Initialize server-side AWS resources
-    const serverData = await serverRunner();
+    // Get the Prisma client
+    const client = await prisma.client;
+
+    // Fetch users from the database to test the connection
+    const users = await client.user.findMany();
     const timestamp = new Date().toISOString();
 
     return (
@@ -15,8 +17,20 @@ export default async function SSRTestPage() {
         <p>SSR is working correctly!</p>
         <p>Page rendered at: {timestamp}</p>
         <div>
-          <h2>Server Configuration Status:</h2>
-          <pre>{JSON.stringify(serverData, null, 2)}</pre>
+          <h2>Database Connection Status:</h2>
+          <p>Successfully connected to the database via RDS Proxy.</p>
+          <h3>Users in Database:</h3>
+          {users.length > 0 ? (
+            <ul>
+              {users.map((user) => (
+                <li key={user.id}>
+                  {user.name} ({user.email})
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No users found in the database.</p>
+          )}
         </div>
       </div>
     );
